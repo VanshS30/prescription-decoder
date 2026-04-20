@@ -62,9 +62,9 @@ export async function POST(req) {
     }
 
     // Gemini 2.0 Flash - free tier, fast, supports vision
-    const model = "gemini-1.5-flashgemini-1.5-flash";
+    const model = "gemini-flash-latestgemini-flash-latest";
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-
+gemini-flash-latest
     const body = {
       systemInstruction: {
         parts: [{ text: SYSTEM_PROMPT }],
