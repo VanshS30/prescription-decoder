@@ -79,7 +79,7 @@ export async function POST(req) {
               },
             },
             {
-              text: "Decode this prescription. Return ONLY the JSON object described in the system prompt.",
+              text: "Decode this prescription. Return ONLY a valid JSON object, nothing else. No markdown, no preamble, no explanation. Start your response with { and end with }.",
             },
           ],
         },
@@ -118,11 +118,18 @@ export async function POST(req) {
       );
     }
 
-    // Strip markdown fences if any
-    const cleaned = text
+    // Extract JSON from the response - handle markdown fences, preamble, etc.
+    let cleaned = text
       .replace(/^```(?:json)?\s*/i, "")
       .replace(/```\s*$/i, "")
       .trim();
+
+    // If still not valid JSON, try to find a JSON object anywhere in the text
+    const firstBrace = cleaned.indexOf("{");
+    const lastBrace = cleaned.lastIndexOf("}");
+    if (firstBrace !== -1 && lastBrace > firstBrace) {
+      cleaned = cleaned.substring(firstBrace, lastBrace + 1);
+    }
 
     let parsed;
     try {
